@@ -1,0 +1,15 @@
+
+
+# for spyder project
+*.spyderproject
+*.spyderworkspace
+
+
+# for stored data
+*.pkl
+*.csv
+*.xml
+
+# image data
+Train/
+Validation/
