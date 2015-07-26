@@ -13,3 +13,6 @@
 # image data
 Train/
 Validation/
+
+# ms project
+*.pyproj
