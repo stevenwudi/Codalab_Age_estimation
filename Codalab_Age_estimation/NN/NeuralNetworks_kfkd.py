@@ -1,6 +1,6 @@
-# -*- coding: utf-8 -*-
 """
-Created on Mon Jul  6 22:38:05 2015
+Created on Mon Jul  6 27:38:05 2015
+ Kaggle facial landmark detection Neural Network class
 @author: dwu
 """
 # file kfkd.py
@@ -34,8 +34,9 @@ except ImportError:
     
 data_dir ="/idiap/user/dwu/spyder/KaggleFacialKeyPointDetection/data/"
 
-FTRAIN = os.path.join(data_dir,'training.csv')
-FTEST =os.path.join(data_dir ,'test.csv')
+def float32(k):
+    return np.cast['float32'](k)
+    
 
 flip_indices = [
     (0, 2), (1, 3),
@@ -43,9 +44,7 @@ flip_indices = [
     (12, 16), (13, 17), (14, 18), (15, 19),
     (22, 24), (23, 25),
     ]    
-def float32(k):
-    return np.cast['float32'](k)
-    
+
 def load(test=False, cols=None):
     fname = FTEST if test else FTRAIN
     # load pandas dataframe
@@ -120,74 +119,61 @@ class AdjustVariable(object):
         new_value = float32(self.ls[epoch - 1])
         getattr(nn, self.name).set_value(new_value)
         
+
+class NeualNetworks_fkfd(object):
+    def __init__():        
+        self.net = NeuralNet(
+            layers=[
+                ('input', layers.InputLayer),
+                ('conv1', layers.Conv2DLayer),
+                ('pool1', layers.MaxPool2DLayer),
+                ('dropout1', layers.DropoutLayer),  # !
+                ('conv2', layers.Conv2DLayer),
+                ('pool2', layers.MaxPool2DLayer),
+                ('dropout2', layers.DropoutLayer),  # !
+                ('conv3', layers.Conv2DLayer),
+                ('pool3', layers.MaxPool2DLayer),
+                ('dropout3', layers.DropoutLayer),  # !
+                ('hidden4', layers.DenseLayer),
+                ('dropout4', layers.DropoutLayer),  # !
+                ('hidden5', layers.DenseLayer),
+                ('output', layers.DenseLayer),
+                ],
+            input_shape=(None, 1, 96, 96),
+            conv1_num_filters=32, conv1_filter_size=(3, 3), pool1_pool_size=(2, 2),
+            dropout1_p=0.1,  # !
+            conv2_num_filters=64, conv2_filter_size=(2, 2), pool2_pool_size=(2, 2),
+            dropout2_p=0.2,  # !
+            conv3_num_filters=128, conv3_filter_size=(2, 2), pool3_pool_size=(2, 2),
+            dropout3_p=0.3,  # !
+            hidden4_num_units=1000,
+            dropout4_p=0.5,  # !
+            hidden5_num_units=1000,
+            output_num_units=30, output_nonlinearity=None,
         
-net = NeuralNet(
-    layers=[
-        ('input', layers.InputLayer),
-        ('conv1', layers.Conv2DLayer),
-        ('pool1', layers.MaxPool2DLayer),
-        ('dropout1', layers.DropoutLayer),  # !
-        ('conv2', layers.Conv2DLayer),
-        ('pool2', layers.MaxPool2DLayer),
-        ('dropout2', layers.DropoutLayer),  # !
-        ('conv3', layers.Conv2DLayer),
-        ('pool3', layers.MaxPool2DLayer),
-        ('dropout3', layers.DropoutLayer),  # !
-        ('hidden4', layers.DenseLayer),
-        ('dropout4', layers.DropoutLayer),  # !
-        ('hidden5', layers.DenseLayer),
-        ('output', layers.DenseLayer),
-        ],
-    input_shape=(None, 1, 96, 96),
-    conv1_num_filters=32, conv1_filter_size=(3, 3), pool1_pool_size=(2, 2),
-    dropout1_p=0.1,  # !
-    conv2_num_filters=64, conv2_filter_size=(2, 2), pool2_pool_size=(2, 2),
-    dropout2_p=0.2,  # !
-    conv3_num_filters=128, conv3_filter_size=(2, 2), pool3_pool_size=(2, 2),
-    dropout3_p=0.3,  # !
-    hidden4_num_units=1000,
-    dropout4_p=0.5,  # !
-    hidden5_num_units=1000,
-    output_num_units=30, output_nonlinearity=None,
+        
+            eval_size=0.1,
+            
+            update_learning_rate=theano.shared(float32(0.03)),
+            update_momentum=theano.shared(float32(0.9)),
+        
+            regression=True,
+            batch_iterator_train=FlipBatchIterator(batch_size=128),
+            on_epoch_finished=[
+                AdjustVariable('update_learning_rate', start=0.03, stop=0.0001),
+                AdjustVariable('update_momentum', start=0.9, stop=0.999),
+                ],      
+            max_epochs=10000,
+            verbose=1,
+            )
+
+    def load_params(load_file):
+        import cPickle as pickle
+        self.net.load(open(load_file,'rb'))
 
 
-    eval_size=0.1,
-    
-    update_learning_rate=theano.shared(float32(0.03)),
-    update_momentum=theano.shared(float32(0.9)),
-
-    regression=True,
-    batch_iterator_train=FlipBatchIterator(batch_size=128),
-    on_epoch_finished=[
-        AdjustVariable('update_learning_rate', start=0.03, stop=0.0001),
-        AdjustVariable('update_momentum', start=0.9, stop=0.999),
-        ],      
-    max_epochs=10000,
-    verbose=1,
-    )
-
-#X, y = load2d()  # load 2-d data
-#net.fit(X, y)
-
-# Training for 1000 epochs will take a while.  We'll pickle the
-# trained model so that we can load it back later:
-import cPickle as pickle
-#with open('net.pickle', 'wb') as f:
- #   pickle.dump(net, f, -1)# -*- coding: utf-8 -*-
-
-net =  pickle.load(open('/idiap/user/dwu/spyder/KaggleFacialKeyPointDetection/net.pickle','rb'))
 
 
-def plot_sample(x, y, axis):
-    img = x.reshape(96, 96)
-    axis.imshow(img, cmap='gray')
-    axis.scatter(y[0::2] * 48 + 48, y[1::2] * 48 + 48, marker='x', s=10)
-
-X, _ = load2d(test=True)
-
-y_pred = net.predict(X)
-with open('y_pred.pickle', 'wb') as f:
-    pickle.dump(y_pred, f)# -*- coding: utf-8 -*-
 
 
 

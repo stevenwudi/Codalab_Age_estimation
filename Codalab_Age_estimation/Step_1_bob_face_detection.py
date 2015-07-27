@@ -29,11 +29,17 @@ for file in os.listdir(train_image_dir):
         print file
         image_count = image_count + 1
         color_image = bob.io.base.load(os.path.join(train_image_dir, file))
-        
+        # create figure
+        from matplotlib import pyplot
+        import numpy
+
         # detect single face
         bounding_box, _ = bob.ip.facedetect.detect_single_face(color_image)
         bounding_boxes[file] =[bounding_box.topleft, bounding_box.bottomright]
         end = time.time()
+        bob.ip.draw.box(color_image, bounding_box.topleft, bounding_box.size, color=(0,255,0))
+        pyplot.imshow(numpy.rollaxis(numpy.rollaxis(color_image, 2),2))
+        pyplot.show()
         print end - start
         
 with open(os.path.join(save_dir,'train_bounding_box.pkl'), 'wb') as f:
