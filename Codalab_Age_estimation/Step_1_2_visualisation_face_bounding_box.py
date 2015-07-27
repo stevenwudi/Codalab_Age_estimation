@@ -31,37 +31,20 @@ for file in os.listdir(train_image_dir):
         print file
         image_count = image_count + 1
         color_image = cv2.imread(os.path.join(train_image_dir, file))
-        pt1, pt2 = train_bounding_box[file]
+        pt1_bob, pt2_bob = train_bounding_box[file]
 
+        # bob and cv2 has different coordinate system
+        pt1 = tuple(reversed(pt1_bob))
+        pt2 = tuple(reversed(pt2_bob))
+        height, width, channels = color_image.shape
         cv2.rectangle(color_image, pt1, pt2 ,color=(0,255,0))
-
-        cv2.imshow('image',color_image)
+        cv2.imshow(file,color_image)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
         cv2.imwrite(os.path.join(train_save_dir, file), color_image)
         # detect single face
+        end = time.time()
+        print end - start
+        
 
-        end = time.time()
-        print end - start
-        
-with open(os.path.join(save_dir,'train_bounding_box.pkl'), 'wb') as f:
-    pickle.dump(bounding_boxes, f, pickle.HIGHEST_PROTOCOL)
-        
-bounding_boxes= {}      
-for file in os.listdir(valid_image_dir):
-    if file.endswith(".jpg"):
-        start = time.time()
-        print file
-        image_count = image_count + 1
-        color_image = bob.io.base.load(os.path.join(valid_image_dir, file))
-        
-        # detect single face
-        bounding_box, _ = bob.ip.facedetect.detect_single_face(color_image)
-        bounding_boxes[file] =[bounding_box.topleft, bounding_box.bottomright]
-        end = time.time()
-        print end - start
-        
-with open(os.path.join(save_dir,'valid_bounding_box.pkl'), 'wb') as f:
-    pickle.dump(bounding_boxes, f, pickle.HIGHEST_PROTOCOL)
-        
         
