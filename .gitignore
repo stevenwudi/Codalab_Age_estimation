@@ -16,3 +16,6 @@ Validation/
 
 # ms project
 *.pyproj
+
+
+*.pickle
