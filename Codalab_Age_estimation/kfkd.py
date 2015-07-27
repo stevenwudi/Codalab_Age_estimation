@@ -32,7 +32,7 @@ except ImportError:
     Conv2DLayer = layers.Conv2DLayer
     MaxPool2DLayer = layers.MaxPool2DLayer
     
-data_dir ="/idiap/user/dwu/spyder/KaggleFacialKeyPointDetection/data/"
+data_dir =r"D:\ChalearnAge\KaggleFacialKeyPointDetection\data"
 
 FTRAIN = os.path.join(data_dir,'training.csv')
 FTEST =os.path.join(data_dir ,'test.csv')
@@ -178,6 +178,35 @@ net.fit(X, y)
 # Training for 1000 epochs will take a while.  We'll pickle the
 # trained model so that we can load it back later:
 import cPickle as pickle
-with open('net.pickle', 'wb') as f:
+
+################################ uncomment the following to save the model
+#with open('net.pickle', 'wb') as f:
+#    pickle.dump(net, f, -1)# -*- coding: utf-8 -*-
+
+
+# load the network
+net = pickle.load( open( r'D:\ChalearnAge\KaggleFacialKeyPointDetection\net.pickle', "rb" ))
+
+
+with open('net.pickle', 'rb') as f:
     pickle.dump(net, f, -1)# -*- coding: utf-8 -*-
+
+from matplotlib import pylot
+def plot_sample(x, y, axis):
+    img = x.reshape(96, 96)
+    axis.imshow(img, cmap='gray')
+    axis.scatter(y[0::2] * 48 + 48, y[1::2] * 48 + 48, marker='x', s=10)
+
+X, _ = load(test=True)
+y_pred = net1.predict(X)
+
+fig = pyplot.figure(figsize=(6, 6))
+fig.subplots_adjust(
+    left=0, right=1, bottom=0, top=1, hspace=0.05, wspace=0.05)
+
+for i in range(16):
+    ax = fig.add_subplot(4, 4, i + 1, xticks=[], yticks=[])
+    plot_sample(X[i], y_pred[i], ax)
+
+pyplot.show()
 
