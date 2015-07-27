@@ -1,8 +1,6 @@
 
-from NN import NeualNetworks_fkfd
+from NN.NeuralNetworks_kfkd import NeuralNetworks_kfkd
 
 
-#with open('net.pickle', 'wb') as f:
- #   pickle.dump(net, f, -1)# -*- coding: utf-8 -*-
-
+net = NeuralNetworks_kfkd
 net =  pickle.load(open('/idiap/user/dwu/spyder/KaggleFacialKeyPointDetection/net.pickle','rb'))

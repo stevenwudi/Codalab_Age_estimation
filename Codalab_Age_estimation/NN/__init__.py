@@ -1,3 +1,3 @@
 
 
-from . import NeualNetworks_fkfd
+from NeuralNetworks_kfkd import *

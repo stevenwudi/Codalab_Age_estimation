@@ -32,7 +32,6 @@ except ImportError:
     Conv2DLayer = layers.Conv2DLayer
     MaxPool2DLayer = layers.MaxPool2DLayer
     
-data_dir ="/idiap/user/dwu/spyder/KaggleFacialKeyPointDetection/data/"
 
 def float32(k):
     return np.cast['float32'](k)
@@ -120,8 +119,11 @@ class AdjustVariable(object):
         getattr(nn, self.name).set_value(new_value)
         
 
-class NeualNetworks_fkfd(object):
-    def __init__():        
+class NeuralNetworks_kfkd(object):
+    """
+    This is a fixed NN
+    """
+    def __init__(self):        
         self.net = NeuralNet(
             layers=[
                 ('input', layers.InputLayer),
