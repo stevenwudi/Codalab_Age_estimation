@@ -62,7 +62,7 @@ Temporary Items
 
 *.csv
 *.png
-
+*.hdf5
 *.npy
 
 # for spyder project
@@ -91,3 +91,5 @@ Codalab_Age_estimation/Codalab_Age_estimation.v11.suo
 *.pyc
 
 *.sln
+
+

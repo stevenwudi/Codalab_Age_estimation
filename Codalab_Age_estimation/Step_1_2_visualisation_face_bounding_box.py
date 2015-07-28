@@ -3,13 +3,6 @@ visualising the bob face detection code
 
 '''
 
-train_image_dir = r'D:\ChalearnAge/Train'
-valid_image_dir = r'D:\ChalearnAge/Validation'
-train_save_dir = r'D:\ChalearnAge\Train_crop'
-valid_save_dir = r'D:\ChalearnAge\Validation_crop'
-# iterate train folder
-image_count = 0
-
 
 import time
 import os
@@ -17,19 +10,35 @@ import cPickle as pickle
 
 import h5py
 
+pc="linux"
+
+if pc=="windows":
+    train_image_dir = r'D:\ChalearnAge/Train'
+    valid_image_dir = r'D:\ChalearnAge/Validation'
+    train_save_dir = r'D:\ChalearnAge\Train_crop'
+    valid_save_dir = r'D:\ChalearnAge\Validation_crop'
+elif pc=="linux":
+    train_image_dir = '/idiap/user/dwu/spyder/Codalab_Age_estimation/Train'
+    valid_image_dir = '/idiap/user/dwu/spyder/Codalab_Age_estimation/Validation'
+
+# iterate train folder
+image_count = 0
+
 bounding_boxes= {}
 
-# load bounding box using bob, the saved .pkl files are supposed to be in local dir
-train_bounding_box = pickle.load( open( "train_bounding_box.pkl", "rb" ) )
+load_path = '/idiap/user/dwu/spyder/Codalab_Age_estimation/'
 
-valid_bounding_box = pickle.load( open( "valid_bounding_box.pkl", "rb" ) )
+# load bounding box using bob, the saved .pkl files are supposed to be in local dir
+train_bounding_box = pickle.load( open(load_path+"train_bounding_box.pkl", "rb" ) )
+
+valid_bounding_box = pickle.load( open(load_path+ "valid_bounding_box.pkl", "rb" ) )
 
 import numpy as np
 import cv2
 
 start_flag = True
 
-f = h5py.File("D:\ChalearnAge\data%d.hdf5", "w", driver="family", memb_size=2**32-1)
+f = h5py.File("data%d.hdf5", "w", driver="family", memb_size=2**32-1)
 x_train = f.create_dataset("x_train", (2477,96,96), dtype='uint8', chunks=True)
 count = 0
 
@@ -78,7 +87,7 @@ for file in os.listdir(train_image_dir):
         count += 1
         
 
-        if True:
+        if False:
             
             cv2.rectangle(color_image, pt1, pt2 , (255,0,0), 5)
             cv2.imshow(file,color_image)
@@ -92,8 +101,5 @@ end = time.time()
 print end - start
 f.close()       
 print "done"
-  
-file = h5py.File("D:\ChalearnAge\data%d.hdf5", "r")      
-x_temp = file["x_train"][:]
-file.close()
+
 
