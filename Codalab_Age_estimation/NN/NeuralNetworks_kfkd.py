@@ -36,14 +36,6 @@ except ImportError:
 def float32(k):
     return np.cast['float32'](k)
     
-
-flip_indices = [
-    (0, 2), (1, 3),
-    (4, 8), (5, 9), (6, 10), (7, 11),
-    (12, 16), (13, 17), (14, 18), (15, 19),
-    (22, 24), (23, 25),
-    ]    
-
 def load(test=False, cols=None):
     fname = FTEST if test else FTRAIN
     # load pandas dataframe
@@ -169,9 +161,9 @@ class NeuralNetworks_kfkd(object):
             verbose=1,
             )
 
-    def load_params(load_file):
+    def load_params(self, load_file):
         import cPickle as pickle
-        self.net.load(open(load_file,'rb'))
+        self.net = pickle.load(open(load_file,'rb'))
 
 
 
