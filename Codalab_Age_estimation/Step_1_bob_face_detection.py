@@ -34,13 +34,15 @@ for file in os.listdir(train_image_dir):
         import numpy
 
         # detect single face
-        bounding_box, _ = bob.ip.facedetect.detect_single_face(color_image)
+        bounding_box, score = bob.ip.facedetect.detect_single_face(color_image)
         bounding_boxes[file] =[bounding_box.topleft, bounding_box.bottomright]
         end = time.time()
-        bob.ip.draw.box(color_image, bounding_box.topleft, bounding_box.size, color=(0,255,0))
-        pyplot.imshow(numpy.rollaxis(numpy.rollaxis(color_image, 2),2))
-        pyplot.show()
+        if False:
+            bob.ip.draw.box(color_image, bounding_box.topleft, bounding_box.size, color=(0,255,0))
+            pyplot.imshow(numpy.rollaxis(numpy.rollaxis(color_image, 2),2))
+            pyplot.show()
         print end - start
+        print "score is:",score
         
 with open(os.path.join(save_dir,'train_bounding_box.pkl'), 'wb') as f:
     pickle.dump(bounding_boxes, f, pickle.HIGHEST_PROTOCOL)
