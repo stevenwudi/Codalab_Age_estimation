@@ -3,11 +3,13 @@ Use trained face detection NN to detect face,
 """
 # we need to import all the classes
 # pre-defined NN class 
+
 import cPickle as pickle
 import os
 import cv2
 import sys
 from matplotlib import pyplot
+
 
 sys.path.append('/idiap/user/dwu/spyder/Codalab_Age_estimation/Codalab_Age_estimation/')
 from Functions.utils import *
@@ -18,6 +20,7 @@ x_temp= file["x_train"]
 print x_temp.shape
 X = x_temp[:]
 X = X.reshape(x_temp.shape[0],1,96,96)
+X = X /255.
 
 # if we using trained network to predict face landmark
 if False:
@@ -72,11 +75,25 @@ if False: # plot the mean face landmark
     pyplot.show()
 
 
+## windows load
+##################################################################
+import h5py
+file = h5py.File("D:ChalearnAge\data%d.hdf5", "r", driver="family", memb_size=2**32-1)      
+x_temp= file["x_train"]
+print x_temp.shape
+
+X = x_temp[:]
+X = X.reshape(x_temp.shape[0],1,96,96)
+X = X /255.
+
+import cPickle as pickle
+y_pred = pickle.load( open('D:\ChalearnAge\y_pred.pkl', "rb" ) )
+
 def plot_sample(x, y, axis):
     img = x.reshape(96, 96)
     axis.imshow(img, cmap='gray')
     axis.scatter(y[0::2] * 48 + 48, y[1::2] * 48 + 48, marker='x', s=10)
-    
+
 
 fig = pyplot.figure(figsize=(6, 6))
 fig.subplots_adjust(left=0, right=1, bottom=0, top=1, hspace=0.05, wspace=0.05)       
