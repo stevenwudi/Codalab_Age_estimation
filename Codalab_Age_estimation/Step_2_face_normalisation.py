@@ -8,6 +8,7 @@ import cPickle as pickle
 import os
 import cv2
 import sys
+import numpy
 from matplotlib import pyplot
 
 
@@ -22,6 +23,8 @@ X = x_temp[:]
 X = X.reshape(x_temp.shape[0],1,96,96)
 X = X /255.
 
+X = pickle.load(open('/idiap/user/dwu/spyder/KaggleFacialKeyPointDetection/Codalab_Age_X_norm.pkl',"rb"))
+X = numpy.array(X, dtype=numpy.float32)
 # if we using trained network to predict face landmark
 if False:
     from NN.NeuralNetworks_kfkd import *
