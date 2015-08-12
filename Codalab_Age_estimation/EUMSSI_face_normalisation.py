@@ -5,10 +5,10 @@ import cv2
 import os, csv
 import pandas as pd
 
-video_path = "D:\ChalearnAge"
-video_name = 'BFMTV_CultureEtVous_2012-12-17_064700.MPG'
-
-face_detecton_file = 'faces.norm'
+video_path = "D:\ChalearnAge\EUMSSI_data/"
+video_file = 'BFMTV_CultureEtVous_2012-12-13_064700'
+video_name = video_file+'.MPG'   
+face_detecton_file = video_path+video_file+'.norm'
 
 def loadFaceDetection(file):
     names = ['frameNum', 'top', 'left', 'bottom', 'right', 'conf', 'd', 'cluster']

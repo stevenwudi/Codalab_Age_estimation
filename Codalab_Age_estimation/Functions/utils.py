@@ -70,7 +70,7 @@ def compute_affine_transformation(src, dst, N=15):
     else:
         scale = 1   
     angle = math.atan(R[0, 1]/R[0, 0]) * 180.0 / cv2.cv.CV_PI
-   
+    #angle = math.atan(R[0, 0]/R[0, 1]) * 180.0 / cv2.cv.CV_PI
     #Compute matrix
-    warp_matrix = cv2.getRotationMatrix2D((src_center.x, src_center.y), angle, scale)
-    return warp_matrix
+    warp_matrix = cv2.getRotationMatrix2D((src_center.x, src_center.y), -angle, scale)
+    return warp_matrix, scale, angle
