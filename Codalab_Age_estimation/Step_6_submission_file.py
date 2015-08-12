@@ -5,6 +5,7 @@ import cPickle as pickle
 import cv2
 import h5py
 import pandas
+import numpy
 
 pc="linux"
 #pc ="virtualbox"
@@ -26,7 +27,7 @@ elif pc=="virtualbox":
 
 ######################################################
 # training, write to a file
-with open(prediction_path+'train_y_pred.pkl','rb') as handle:
+with open(load_path+'train_y_pred.pkl','rb') as handle:
     y_dict = pickle.load(handle)
 y_age = y_dict['y_pred'] * y_dict['y_mean'] + y_dict['y_mean']
 
@@ -35,14 +36,14 @@ train_prediction_file = open(load_path+"train_y_pred.csv", "w")
 count = 0
 for file in os.listdir(train_image_dir):
      if file.endswith(".jpg"):
-         train_prediction_file.write(file,';', y_age[count],'\n')
+         train_prediction_file.write(file+';'+ numpy.array_str(y_age[count][0])+'\n')
 
 
 train_prediction_file.close()
 
 ######################################################
 # validation
-with open(prediction_path+'valid_y_pred.pkl','rb') as handle:
+with open(load_path+'valid_y_pred.pkl','rb') as handle:
     y_dict = pickle.load(handle)
 y_age = y_dict['y_pred'] * y_dict['y_mean'] + y_dict['y_mean']
 # load bounding box using bob, the saved .pkl files are supposed to be in local dir
@@ -51,6 +52,8 @@ valid_prediction_file = open(load_path+"valid_y_pred.csv", "w")
 count = 0
 for file in os.listdir(valid_image_dir):
      if file.endswith(".jpg"):
-         valid_prediction_file.write(file,';', y_age[count],'\n')
+         valid_prediction_file.write(file+';'+ numpy.array_str(y_age[count][0])+'\n')
 
 valid_prediction_file.close()
+
+print "finish writing submission!"
