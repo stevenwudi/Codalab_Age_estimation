@@ -3,7 +3,7 @@
 import sys
 import cPickle as pickle
 pc = "linux"
-#pc = "windows"
+pc = "windows"
 #pc = "virtualbox"
 if pc=="linux": 
     sys.path.append('/idiap/user/dwu/spyder/Codalab_Age_estimation/Codalab_Age_estimation/')
@@ -13,6 +13,7 @@ if pc=="linux":
 elif pc=="windows":
     net_params = r'D:\ChalearnAge\net_params.pickle'
     fname ="data_with_label.hdf5"
+    prediction_path = r"D:\ChalearnAge\Prediction/"
     
     
 from NN.Convnet_age_ony_regression import *
@@ -40,4 +41,6 @@ y_dict['y_pred'] = y_pred
 y_dict['y_mean'] = y_mean
 with open(load_path+'valid_y_pred.pkl','wb') as handle:
     pickle.dump(y_dict, handle)
+
+
 

@@ -1,6 +1,6 @@
 import sys
 pc = "linux"
-#pc = "windows"
+pc = "windows"
 #pc = "virtualbox"
 if pc=="linux": 
     sys.path.append('/idiap/user/dwu/spyder/Codalab_Age_estimation/Codalab_Age_estimation/')
@@ -18,7 +18,7 @@ net_temp = ConvNet_Naive_Age_Regression()
 #This is Di Wu's adaptation that because we have different last layer
 #Though there is no difference between the "load_params_from" method
 #because the constraint p1.get_value().shape == p2v.shape:
-net_temp.net.load_params_from(net_params)
+#net_temp.net.load_params_from(net_params)
 
 
 X, y, y_mean = load(fname)
