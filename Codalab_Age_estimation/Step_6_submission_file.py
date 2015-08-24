@@ -37,6 +37,7 @@ count = 0
 for file in os.listdir(train_image_dir):
      if file.endswith(".jpg"):
          train_prediction_file.write(file+';'+ numpy.array_str(y_age[count][0])+'\n')
+         count += 1
 
 
 train_prediction_file.close()
@@ -53,6 +54,7 @@ count = 0
 for file in os.listdir(valid_image_dir):
      if file.endswith(".jpg"):
          valid_prediction_file.write(file+';'+ numpy.array_str(y_age[count][0])+'\n')
+         count += 1
 
 valid_prediction_file.close()
 
