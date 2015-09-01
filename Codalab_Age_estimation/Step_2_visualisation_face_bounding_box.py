@@ -12,7 +12,7 @@ import pandas
 
 pc="linux"
 #pc ="virtualbox"
-#pc="windows"
+pc="windows"
 if pc=="windows":
     train_image_dir = r'D:\ChalearnAge/Train'
     valid_image_dir = r'D:\ChalearnAge/Validation'

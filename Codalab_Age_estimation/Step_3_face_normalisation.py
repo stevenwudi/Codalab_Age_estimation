@@ -38,7 +38,12 @@ if pc=="virtualbox": data_load_path = '/home/user/Codalab_Age_Data/'
 #file = h5py.File('/home/user/Codalab_Age_Data/data%d.hdf5', "r", driver="family", memb_size=2**32-1)
 #file = h5py.File('/home/user/Codalab_Age_estimation/data0.hdf5', "r", driver="family", memb_size=2**32-1)
 
-X = pickle.load( open("/home/user/Codalab_Age_estimation/Codalab_Age_estimation/Codalab_Age_X_norm.pkl", "rb" ) )
+if pc=="virtualbox":
+    X = pickle.load( open("/home/user/Codalab_Age_estimation/Codalab_Age_estimation/Codalab_Age_X_norm.pkl", "rb" ) )
+if pc=="windows":
+    X = pickle.load(open('/idiap/user/dwu/spyder/KaggleFacialKeyPointDetection/Codalab_Age_X_norm.pkl',"rb"))
+
+X = numpy.array(X, dtype=numpy.float32)
 
 
 x_temp= file["x_train"]
@@ -47,21 +52,10 @@ X = x_temp[:]
 X = X.reshape(x_temp.shape[0],1,96,96)
 X = X /255.
 
-<<<<<<< HEAD:Codalab_Age_estimation/Step_2_face_normalisation.py
-X = pickle.load(open('/idiap/user/dwu/spyder/KaggleFacialKeyPointDetection/Codalab_Age_X_norm.pkl',"rb"))
-X = numpy.array(X, dtype=numpy.float32)
-=======
-X = numpy.array(X,dtype=numpy.float32)
-if pc=="windows":
-    with open(os.path.join(r'D:\ChalearnAge','Codalab_Age_X_norm.pkl'), 'wb') as f:
-        pickle.dump(X, f, pickle.HIGHEST_PROTOCOL)
-
->>>>>>> 61332f94c9cb50fb801e9015d8cae6417e9659ac:Codalab_Age_estimation/Step_3_face_normalisation.py
 # if we using trained network to predict face landmark
-if False:
+if pc=="linux":
     from NN.NeuralNetworks_kfkd import *
-    net_temp = NeuralNetworks_kfkd()
-    
+    net_temp = NeuralNetworks_kfkd()    
     net_temp.net.load_params_from(r'D:\ChalearnAge\net_params.pickle')
     net_temp.load_params(load_path)
     y_pred = net_temp.net.predict(X)    
@@ -72,7 +66,7 @@ else:# we load
     y_pred = pickle.load( open(y_pred_save_path+  "y_pred.pkl", "rb" ) )
 
 
-if False:  
+if pc=="windows":  
     from Functions.utils import plot_sample
     fig = pyplot.figure(figsize=(6, 6))
     fig.subplots_adjust(
