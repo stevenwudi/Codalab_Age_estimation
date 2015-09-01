@@ -98,7 +98,6 @@ for file in os.listdir(train_image_dir):
         
 
         if False:
-            
             cv2.rectangle(color_image, pt1, pt2 , (255,0,0), 5)
             cv2.imshow(file,color_image)
             cv2.imshow(file+'_cropped', gray_image)

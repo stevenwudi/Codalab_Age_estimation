@@ -39,23 +39,26 @@ def float32(k):
 
 def load(fname, test=False, cols=None):
     import h5py
+    import numpy
     # load pandas dataframe
-    f = h5py.File(fname, "r") 
+    f = h5py.File(fname, "r")
     x_train_image_croped = f["x_train_image_croped"][:]
-    x_valid_image_croped = f["x_valid_image_croped"][:]
+    #idx = numpy.argmin(numpy.sum(numpy.sum(x_train_image_croped, axis=1), axis=1))
+    x_train_image_croped = x_train_image_croped[:]
     y_train_age = f["y_train_age"][:]
     y_train_variance = f["y_train_variance"][:]
     y_mean = y_train_age.mean()
+    y_std = y_train_age.std()
 
+    x_valid_image_croped = f["x_valid_image_croped"][:]
     # only FTRAIN has any target columns
     if not test:  
         X= np.expand_dims(x_train_image_croped,axis=1) 
         X = X / 255.  
         X = X.astype(np.float32)
-        y = y_train_age
         # scale target coordinates to around [-1, 1]
         
-        y = (y - y_mean) / y_mean
+        y = (y_train_age - y_mean) / y_std
         # shuffle train data
         X, y = shuffle(X, y, random_state=42)  
         y = y.astype(np.float32)
@@ -64,7 +67,7 @@ def load(fname, test=False, cols=None):
         X = X / 255.  
         X = X.astype(np.float32)
         y = None
-    return X, y, y_mean
+    return X, y, y_mean, y_std
 
 
 class FlipBatchIterator(BatchIterator):
@@ -100,7 +103,7 @@ class ConvNet_Naive_Age_Regression(object):
     """
     This is a fixed NN
     """
-    def __init__(self):        
+    def __init__(self, shuffle=True):
         self.net = NeuralNet(
             layers=[
                 ('input', layers.InputLayer),
@@ -138,10 +141,11 @@ class ConvNet_Naive_Age_Regression(object):
             regression=True,
             batch_iterator_train=FlipBatchIterator(batch_size=128),
             on_epoch_finished=[
-                AdjustVariable('update_learning_rate', start=0.03, stop=0.0001),
+                AdjustVariable('update_learning_rate', start=0.01, stop=0.0001),
                 AdjustVariable('update_momentum', start=0.9, stop=0.999),
                 ],      
-            max_epochs=10000,
+            max_epochs=1000,
             verbose=1,
+            shuffle = True,  # shuffle training and validation split
             )
 
