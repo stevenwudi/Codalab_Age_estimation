@@ -46,15 +46,19 @@ def load_age_deviation(file):
     return pandas.read_table(file, sep=';', names=names)
 
 grounth_truth = load_age_deviation(train_image_dir+'/Train.csv')
+RESIZE_SIZE = 125
 
 f = h5py.File(load_path+"data_with_label_DPM_includeTraining.hdf5", "w")
-x_train_image_croped = f.create_dataset("x_train_image_croped", (2476,96,96), dtype='i', chunks=True)
+x_train_image_croped = f.create_dataset("x_train_image_croped", (2476,RESIZE_SIZE,RESIZE_SIZE), dtype='i', chunks=True)
 y_train_age = f.create_dataset("y_train_age", (2476,1), dtype="f",chunks=True)
 y_train_variance = f.create_dataset("y_train_variance", (2476,1), dtype="f", chunks=True)
-x_valid_image_croped = f.create_dataset("x_valid_image_croped", (1136,96,96), dtype='i',chunks=True)
+x_valid_image_croped = f.create_dataset("x_valid_image_croped", (1136,RESIZE_SIZE,RESIZE_SIZE), dtype='i',chunks=True)
 # iterate train folder
 count = 0
 count_bb = -1
+
+
+
 if True:
     with open(train_image_list, 'r') as train_list_file:
         for image_name in train_list_file:
@@ -83,7 +87,7 @@ if True:
             # we need to expand a bit for face alignment, but this expansion doesn't need to be strict
             face_height = abs(pt1[0] - pt2[0])
             face_width = abs(pt1[1] - pt2[1])
-            expand_up = face_height * 0.4
+            expand_up = face_height * 0.3
             expand_down = face_height * 0.1
             expand_sides = face_width * 0.2
 
@@ -96,7 +100,7 @@ if True:
 
             # resize the image to 96*96 according to kaggle facial keypoint detection
             # http://danielnouri.org/notes/2014/12/17/using-convolutional-neural-nets-to-detect-facial-keypoints-tutorial/
-            resize_img = cv2.resize(crop_img, (96,96))
+            resize_img = cv2.resize(crop_img, (RESIZE_SIZE,RESIZE_SIZE))
             # And for face landmark detction, we use only gray image
             gray_image = cv2.cvtColor(resize_img, cv2.COLOR_BGR2GRAY)
             x_train_image_croped[count, :, :] = gray_image
@@ -115,7 +119,7 @@ if True:
                 cv2.putText(gray_image, str(y_train_age[count-1]), (0,50), font, 1, (255,0,255))
                 cv2.imwrite(os.path.join(train_save_dir, image_name[:-1]), gray_image)
 
-x_train_image_croped.resize((count, 96, 96))
+x_train_image_croped.resize((count, RESIZE_SIZE, RESIZE_SIZE))
 y_train_age.resize((count,1))
 y_train_variance.resize((count,1))
 
@@ -143,7 +147,7 @@ if True:
             # we need to expand a bit for face alignment, but this expansion doesn't need to be strict
             face_height = abs(pt1[0] - pt2[0])
             face_width = abs(pt1[1] - pt2[1])
-            expand_up = face_height * 0.4
+            expand_up = face_height * 0.3
             expand_down = face_height * 0.1
             expand_sides = face_width * 0.2
 
@@ -156,7 +160,7 @@ if True:
 
             # resize the image to 96*96 according to kaggle facial keypoint detection
             # http://danielnouri.org/notes/2014/12/17/using-convolutional-neural-nets-to-detect-facial-keypoints-tutorial/
-            resize_img = cv2.resize(crop_img, (96,96))
+            resize_img = cv2.resize(crop_img, (RESIZE_SIZE,RESIZE_SIZE))
             # And for face landmark detction, we use only gray image
             gray_image = cv2.cvtColor(resize_img, cv2.COLOR_BGR2GRAY)
             x_valid_image_croped[count, :, :] = gray_image
@@ -171,4 +175,4 @@ if True:
                 # draw enlarged face
                 cv2.imwrite(os.path.join(valid_save_dir, image_name[:-1]), gray_image)
 
-x_valid_image_croped.resize((count, 96, 96))
+x_valid_image_croped.resize((count, RESIZE_SIZE, RESIZE_SIZE))

@@ -10,6 +10,7 @@ from datetime import datetime
 import os
 import sys
 #from matplotlib import pyplot
+sys.path.append('/idiap/home/dwu/lasagne/lasagne')
 import numpy as np
 from lasagne import layers
 from nolearn.lasagne import BatchIterator

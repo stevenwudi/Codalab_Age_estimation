@@ -10,23 +10,12 @@ import cv2
 import h5py
 import pandas
 
-pc="linux"
-#pc ="virtualbox"
-pc="windows"
-if pc=="windows":
-    train_image_dir = r'D:\ChalearnAge/Train'
-    valid_image_dir = r'D:\ChalearnAge/Validation'
-    train_save_dir = r'D:\ChalearnAge\Train_crop'
-    valid_save_dir = r'D:\ChalearnAge\Validation_crop'
-    load_path = r'D:\ChalearnAge/'
-elif pc=="linux":
-    train_image_dir = '/idiap/user/dwu/spyder/Codalab_Age_estimation/Train'
-    valid_image_dir = '/idiap/user/dwu/spyder/Codalab_Age_estimation/Validation'
-    load_path = '/idiap/user/dwu/spyder/Codalab_Age_estimation/'
-elif pc=="virtualbox":
-    train_image_dir = '/home/user/Codalab_Age_Data/Train/'
-    valid_image_dir = '/home/user/Codalab_Age_Data/Train/'
-    load_path = '/home/user/Codalab_Age_Data/'
+
+train_image_dir = '/idiap/user/dwu/spyder/Codalab_Age_estimation/Train'
+valid_image_dir = '/idiap/user/dwu/spyder/Codalab_Age_estimation/Validation'
+load_path = '/idiap/user/dwu/spyder/Codalab_Age_estimation/'
+
+f = h5py.File(load_path+"data_with_label_DPM_includeTraining.hdf5", "w")
 
 # iterate train folder
 image_count = 0
