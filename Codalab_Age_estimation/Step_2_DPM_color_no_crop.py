@@ -1,9 +1,5 @@
-__author__ = 'dwu'
-
-__author__ = 'dwu'
-
 '''
-visualising the bob face detection code and save the result into a single file
+visualising the DPM face detection code and save the result into a single file
 
 '''
 
@@ -12,23 +8,43 @@ import os
 import cv2
 import h5py
 import pandas
-
-
-train_image_dir = '/idiap/user/dwu/spyder/Codalab_Age_estimation/Train'
-valid_image_dir = '/idiap/user/dwu/spyder/Codalab_Age_estimation/Validation'
-train_save_dir = '/idiap/user/dwu/spyder/Codalab_Age_estimation/Train_crop'
-valid_save_dir = '/idiap/user/dwu/spyder/Codalab_Age_estimation/Valid_crop'
-load_path = '/idiap/user/dwu/spyder/Codalab_Age_estimation/'
-
-
 import scipy.io
+pc = "linux"
+pc = "windows"
 
-train_bounding_box_mat = scipy.io.loadmat('/idiap/user/dwu/spyder/Codalab_Age_estimation/boundingbox_train.mat')
-train_image_list = '/idiap/user/dwu/spyder/Codalab_Age_estimation/train_matlab_squence.csv'
-train_bounding_box = train_bounding_box_mat['boundingbox']
-valid_bounding_box_mat = scipy.io.loadmat('/idiap/user/dwu/spyder/Codalab_Age_estimation/boundingbox_valid.mat')
-valid_bounding_box = valid_bounding_box_mat['boundingbox']
-valid_image_list = '/idiap/user/dwu/spyder/Codalab_Age_estimation/valid_matlab_squence.csv'
+if pc=="linux":
+    train_image_dir = '/idiap/user/dwu/spyder/Codalab_Age_estimation/Train'
+    valid_image_dir = '/idiap/user/dwu/spyder/Codalab_Age_estimation/Validation'
+    train_save_dir = '/idiap/user/dwu/spyder/Codalab_Age_estimation/Train_crop'
+    valid_save_dir = '/idiap/user/dwu/spyder/Codalab_Age_estimation/Valid_crop'
+    load_path = '/idiap/user/dwu/spyder/Codalab_Age_estimation/'
+
+    train_bounding_box_mat = scipy.io.loadmat('/idiap/user/dwu/spyder/Codalab_Age_estimation/boundingbox_train.mat')
+    train_image_list = '/idiap/user/dwu/spyder/Codalab_Age_estimation/train_matlab_squence.csv'
+    train_bounding_box = train_bounding_box_mat['boundingbox']
+    valid_bounding_box_mat = scipy.io.loadmat('/idiap/user/dwu/spyder/Codalab_Age_estimation/boundingbox_valid.mat')
+    valid_bounding_box = valid_bounding_box_mat['boundingbox']
+    valid_image_list = '/idiap/user/dwu/spyder/Codalab_Age_estimation/valid_matlab_squence.csv'
+
+
+elif pc=="windows":
+    train_image_dir = 'D:\ChalearnAge\Train'
+    valid_image_dir = 'D:\ChalearnAge\Validation'
+    train_save_dir = 'D:\ChalearnAge\Train_crop_DPM'
+    valid_save_dir = 'D:\ChalearnAge\Valid_crop_DPM'
+    load_path = 'D:\ChalearnAge/'
+
+    DPM_save_path = "C:\Users\PC-User\Documents\GitHub\Codalab_Age_estimation\Codalab_Age_estimation\DPM_face_prediction"
+    train_bounding_box_mat = scipy.io.loadmat(DPM_save_path+'/boundingbox_train.mat')
+    train_image_list = DPM_save_path+'/train_matlab_squence.csv'
+    train_bounding_box = train_bounding_box_mat['boundingbox']
+    valid_bounding_box_mat = scipy.io.loadmat(DPM_save_path+'/boundingbox_valid.mat')
+    valid_bounding_box = valid_bounding_box_mat['boundingbox']
+    valid_image_list = DPM_save_path+'/valid_matlab_squence.csv'
+
+
+
+
 
 def load_age_deviation(file):
     names = ['imageID', 'age', 'variance']
@@ -87,23 +103,18 @@ if True:
                 y_train_variance[count] = float(grounth_truth['variance'][grounth_truth['imageID']==image_name[:-1]].values)
                 count += 1
 
-            if False:
-                #cv2.rectangle(color_image, pt1, pt2, (255,0,0), 5)
-                #cv2.imshow(image_name[:-1],color_image)
-                #cv2.imshow(image_name[:-1]+'_cropped', gray_image)
-                #cv2.waitKey(1000)
-                #cv2.destroyAllWindows()
-                # draw enlarged face
                 font = cv2.FONT_HERSHEY_SIMPLEX
                 cv2.putText(resize_img, str(y_train_age[count-1]), (0,50), font, 1, (255,0,255))
                 cv2.imwrite(os.path.join(train_save_dir, image_name[:-1]), resize_img)
+
+            if False:              
                 cv2.imshow(image_name[:-1]+'_cropped', resize_img)
                 cv2.waitKey(1000)
                 cv2.destroyAllWindows()
 
-x_train_image_croped.resize((count, 96, 96, 3))
-y_train_age.resize((count,1))
-y_train_variance.resize((count,1))
+#x_train_image_croped.resize((count, 96, 96, 3))
+#y_train_age.resize((count,1))
+#y_train_variance.resize((count,1))
 
 count = 0
 if True:
@@ -146,14 +157,9 @@ if True:
             x_valid_image_croped[count, :] = resize_img
             count += 1
 
+            cv2.imwrite(os.path.join(valid_save_dir, image_name[:-1]), resize_img)
+            
             if False:
-                #cv2.rectangle(color_image, pt1, pt2 , (255,0,0), 5)
-                #cv2.imshow(image_name[:-1],color_image)
-                #cv2.imshow(image_name[:-1]+'_cropped', gray_image)
-                #cv2.waitKey(1000)
-                #cv2.destroyAllWindows()
-                # draw enlarged face
-                cv2.imwrite(os.path.join(valid_save_dir, image_name[:-1]), resize_img)
                 cv2.imshow(image_name[:-1]+'_cropped', resize_img)
                 cv2.waitKey(1000)
                 cv2.destroyAllWindows()

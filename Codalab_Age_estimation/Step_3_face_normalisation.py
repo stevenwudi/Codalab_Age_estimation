@@ -96,9 +96,16 @@ if False: # plot the mean face landmark
 
 ## windows load
 ##################################################################
-
+f = h5py.File("D:\ChalearnAge\data_with_label_DPM_includeTraining.hdf5", "r")
+x_train_image_croped = f["x_train_image_croped"][:]
 X = x_train_image_croped[:]
-X  = X [:, 14:-15, 14:-15]
+
+
+y_pred = pickle.load( open("D:\ChalearnAge\y_pred.pkl", "rb"))
+y_pred_valid = pickle.load( open("D:\ChalearnAge\y_valid_pred.pkl", "rb"))
+y_mean = pickle.load( open("D:\ChalearnAge\y_mean.pkl", "rb" ) )
+
+#X  = X [:, 14:-15, 14:-15]
 X = numpy.expand_dims(X,1)
 
 # we only plot left eye center, right eye center and mouth center bottom lip
@@ -136,12 +143,15 @@ for i in range(8,16):
     for p in range(3):
         pst2[p][0] = y_pred[i+START_FRAME-8][plot_idx_x[p]]
         pst2[p][1] = y_pred[i+START_FRAME-8][plot_idx_y[p]]
-    M = cv2.getAffineTransform(pst2*SCALE+SCALE, pst1*SCALE+SCALE)
+    M = cv2.getAffineTransform(pst2, pst1)
     img = X[i+START_FRAME-8][0,:]
     print type(img)
     print img.shape
-    #dst = cv2.warpAffine(img, M, img.shape[:-1])
-    dst = img
+
+    img = numpy.expand_dims(img,2)
+    dst = cv2.warpAffine(img, M, img.shape[:-1],  cv2.cv.CV_INTER_LINEAR, cv2.cv.CV_WARP_FILL_OUTLIERS, 0)
+
+    #dst = img
     ax = fig.add_subplot(4, 4, i + 1, xticks=[], yticks=[])
     ax.imshow(dst, cmap='gray')
     ax.scatter(y_mean[0::2] * WIDTH/2 + WIDTH/2, y_mean[1::2] * WIDTH/2 + WIDTH/2, marker='x', s=10, color='r')
